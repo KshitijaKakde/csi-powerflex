@@ -55,5 +55,5 @@ jobs:
     name: Release CSM Drivers and Modules
     with:
       version: ${{ needs.process-inputs.outputs.processedVersion }}
-      images: 'csi-vxflexos'
+      images: 'csi-unity'
     secrets: inherit
