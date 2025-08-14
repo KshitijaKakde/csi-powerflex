@@ -47,8 +47,8 @@ jobs:
           fi
           echo "versionEnv=minor" >> $GITHUB_OUTPUT
 
-  decrypt-secret:
-    name: Decrypt Secret File
+  import-gpg-key:
+    name: Import GPG Key
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -60,15 +60,8 @@ jobs:
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
-      - name: Decrypt secret file
-        run: |
-          gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
-          --output secret.txt secret.txt.gpg
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
   csm-release:
-    needs: [process-inputs, decrypt-secret]
+    needs: [process-inputs, import-gpg-key]
     uses: KshitijaKakde/common-github-actions/.github/workflows/create-tag-release.yaml@main
     name: Create Tag and Release
     with:
