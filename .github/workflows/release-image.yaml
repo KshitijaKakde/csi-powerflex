@@ -1,4 +1,4 @@
-name: Create Tag and Release
+name: Release Image
 # Invocable as a reusable workflow
 # Can be manually triggered
 on:  # yamllint disable-line rule:truthy
