@@ -1,6 +1,5 @@
 name: Create Tag and Release
-# Invocable as a reusable workflow
-# Can be manually triggered
+
 on:  # yamllint disable-line rule:truthy
   workflow_call:
   workflow_dispatch:
@@ -21,6 +20,7 @@ on:  # yamllint disable-line rule:truthy
         type: string
   repository_dispatch:
     types: [auto-release-workflow]
+
 jobs:
   process-inputs:
     name: Process Inputs
@@ -38,19 +38,37 @@ jobs:
             exit 0
           fi
           if [[ "${{ github.event.inputs.version }}" != "" && "${{ github.event.inputs.option }}" == "n-1/n-2 patch (Provide input in the below box)" ]]; then
-            # if both version and option are provided, then version takes precedence i.e. patch release for n-1/n-2
             echo "versionEnv=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
             exit 0
           fi
           if [[ "${{ github.event.inputs.option }}" != "n-1/n-2 patch (Provide input in the below box)" ]]; then
-            # if only option is provided, then option takes precedence i.e. minor, major or patch release
             echo "versionEnv=${{ github.event.inputs.option }}" >> $GITHUB_OUTPUT
             exit 0
           fi
-          # if neither option nor version is provided, then minor release is taken by default (Auto-release)
           echo "versionEnv=minor" >> $GITHUB_OUTPUT
+
+  decrypt-secret:
+    name: Decrypt Secret File
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Import GPG private key
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Decrypt secret file
+        run: |
+          gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
+          --output secret.txt secret.txt.gpg
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
   csm-release:
-    needs: [process-inputs]
+    needs: [process-inputs, decrypt-secret]
     uses: KshitijaKakde/common-github-actions/.github/workflows/create-tag-release.yaml@main
     name: Release CSM Drivers and Modules
     with:
