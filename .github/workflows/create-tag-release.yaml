@@ -1,4 +1,4 @@
-name: Release CSI-Powerflex
+name: Create Tag and Release
 # Invocable as a reusable workflow
 # Can be manually triggered
 on:  # yamllint disable-line rule:truthy
@@ -51,7 +51,7 @@ jobs:
           echo "versionEnv=minor" >> $GITHUB_OUTPUT
   csm-release:
     needs: [process-inputs]
-    uses: KshitijaKakde/common-github-actions/.github/workflows/csm-release-driver-module.yaml@main
+    uses: KshitijaKakde/common-github-actions/.github/workflows/create-tag-release.yaml@main
     name: Release CSM Drivers and Modules
     with:
       version: ${{ needs.process-inputs.outputs.processedVersion }}
