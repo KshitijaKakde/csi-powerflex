@@ -56,9 +56,9 @@ jobs:
 
       - name: Import GPG private key
         run: |
-          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          echo "$gpg_private_key" | gpg --batch --import
         env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg_private_key: ${{ secrets.gpg_private_key }}
 
   csm-release:
     needs: [process-inputs, import-gpg-key]
