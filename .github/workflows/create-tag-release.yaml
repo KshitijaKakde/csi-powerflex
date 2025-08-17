@@ -57,12 +57,12 @@ jobs:
     secrets: inherit
 
   next-steps:
-   name: 📌 Next Steps for Release Process
-   runs-on: ubuntu-latest
-   needs: csm-release
-   steps:
-     - name: Share next steps with user
-       run: |
-        echo "✅ Tag and release completed."
-        echo "➡️ Please manually trigger the Jenkins image build job: CSM-Images-Build-Nightly."
-        echo "🚀 Once the Jenkins image build job is successful, manually trigger the Release Image workflow from GitHub Actions."
+    name: 📌 Next Steps for Release Process
+    runs-on: ubuntu-latest
+    needs: csm-release
+    steps:
+      - name: Share next steps with user
+        run: |
+          echo "✅ Tag and release completed."
+          echo "➡️ Please manually trigger the Jenkins image build job: CSM-Images-Build-Nightly."
+          echo "🚀 Once the Jenkins image build job is successful, trigger the Release Image workflow from GitHub Actions."
