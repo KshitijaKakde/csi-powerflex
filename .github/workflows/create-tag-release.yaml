@@ -1,5 +1,3 @@
-name: Create Tag and Release
-
 on:  # yamllint disable-line rule:truthy
   workflow_call:
   workflow_dispatch:
@@ -55,3 +53,11 @@ jobs:
       version: ${{ needs.process-inputs.outputs.processedVersion }}
       images: 'csi-unity'
     secrets: inherit
+
+  notify-manual-image-build:
+    name: Notify Manual Image Build
+    runs-on: ubuntu-latest
+    needs: csm-release
+    steps:
+      - name: Inform user to manually trigger image build
+        run: echo "✅ Tag and release completed. Please manually trigger the image build workflow next."
